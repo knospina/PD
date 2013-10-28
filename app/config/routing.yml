@@ -1,0 +1,5 @@
+ekpd:
+    resource: "@EKPDBundle/Controller/"
+    type:     annotation
+    prefix:   /
+

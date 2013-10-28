@@ -1,0 +1,39 @@
+{% extends 'EKPDBundle::base.html.twig' %}
+
+{% block content %}
+
+<header id="main_nav">
+    <nav>
+        <ul>
+            <li>Te būs navigācija</li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section>
+
+        <article>
+            <header>
+                <h2>Te būs feed title</h2>
+                <p>Feeda laiks, autors utt</p>
+            </header>
+            <p>Feeda teksts</p>
+        </article>
+
+    </section>
+
+    <aside>
+        <h2>Hi, {{ user.name }}!</h2>
+        <img src="{{ user.profilePic }}" alt="{{ user.name }} user picture" />
+        <p>E-mail: {{ user.email }}</p>
+        <p>Birthday: {{ user.birthDate|date('Y-m-d') }}</p>
+    </aside>
+</main>
+
+<footer>
+    <p>Wish list 2013 Evita Knospiņa</p>
+</footer>
+
+
+{% endblock %}

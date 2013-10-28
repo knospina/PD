@@ -1,0 +1,145 @@
+body {
+    background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAALElEQVQYV2P0O3vkPwMQbDK2YQTRuAAj0QqxmYBNM1briFaIzRbi3TgEPAMA840gCxpn3YQAAAAASUVORK5CYII=) repeat;
+    font-family: 'Oswald';
+    font-weight: 300;
+    color: #556270;
+}
+
+/* Login page */
+
+#login {
+    width: 370px;
+    margin: auto;
+    text-align: center;
+    background: #4ECDC4;
+    border-radius: 20px;
+    height: 260px;
+}
+
+#login h1 {
+    color: #C44D58;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 45px;
+    padding-top: 35px;
+    margin-bottom: 10px;
+}
+
+#login h2 {
+    font-size: 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #C44D58;
+}
+
+#login ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#login li {
+    width: 160px;
+    margin-left: auto;
+    margin-right: auto;
+    background: #C7F464;
+    border-radius: 10px;
+    display: block;
+    position: relative;
+    padding: 15px 0;
+}
+
+#login li a {
+    text-decoration: none;
+    vertical-align: middle;
+    height: 50px;
+    width: 200px;
+    font-size: 16px;
+    color: #556270;
+    font-weight: 700;
+}
+
+/* Lapas content */
+
+#main_nav {
+    margin-bottom: 10px;
+    width: 98%;
+    margin-right: 1%;
+    margin-left: 1%;
+    background: #C7F464;
+    border-radius: 10px;
+}
+
+header nav {    
+    padding: 10px;
+}
+
+#main_nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+main {
+    width: 98%;
+    margin-left: 1%;
+    margin-right: 1%;
+    height: 100%;
+}
+
+section {
+    width: 78%;
+    margin-right: 0;
+    display: block;
+    float: right;
+    background: #C7F464;
+    border-radius: 10px;
+}
+
+aside {
+    width: 20%;
+    display: block;
+    margin-right: 1%;
+    background: #C7F464;
+    border-radius: 10px;
+    height: 100%;
+}
+
+aside h2 {
+    text-align: center;
+    padding-top: 5px;
+    margin-bottom: 5px;
+    color: #C44D58;
+    word-wrap: break-word;
+}
+
+aside img {
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+    width: 82%;
+}
+
+aside p {
+margin-left: 10px;
+padding-bottom: 5px;
+margin-top: 0;
+margin-bottom: 0;
+word-wrap: break-word;
+}
+
+footer {
+    width: 98%;
+    margin-right: 1%;
+    margin-left: 1%;
+    background: #C7F464;
+    border-radius: 10px;
+    text-align: center;
+    clear: both;
+    margin-top: 10px;
+}
+
+footer p {
+    margin: 0;
+    padding: 10px;
+}
+
