@@ -10,8 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="EK\PDBundle\Entity\UserRepository")
  */
-class User
-{
+class User {
+
     /**
      * @var integer
      *
@@ -31,9 +31,16 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="firstName", type="string", length=255)
      */
-    private $name;
+    private $firstName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="lastName", type="string", length=255)
+     */
+    private $lastName;
 
     /**
      * @var string
@@ -41,29 +48,27 @@ class User
      * @ORM\Column(name="email", type="string", length=255)
      */
     private $email;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="birthDate", type="date")
      */
     private $birthDate;
-    
-     /**
+
+    /**
      * @var string
      *
      * @ORM\Column(name="profilePic", type="string", length=255)
      */
     private $profilePic;
 
-
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -73,10 +78,9 @@ class User
      * @param string $fbId
      * @return User
      */
-    public function setFbId($fbId)
-    {
+    public function setFbId($fbId) {
         $this->fbId = $fbId;
-    
+
         return $this;
     }
 
@@ -85,32 +89,59 @@ class User
      *
      * @return string 
      */
-    public function getFbId()
-    {
+    public function getFbId() {
         return $this->fbId;
     }
 
     /**
-     * Set name
+     * Set firstName
      *
-     * @param string $name
+     * @param string $firstName
      * @return User
      */
-    public function setName($name)
-    {
-        $this->name = $name;
-    
+    public function setFirstName($firstName) {
+        $this->firstName = $firstName;
+
         return $this;
     }
 
     /**
-     * Get name
+     * Get firstName
      *
      * @return string 
      */
-    public function getName()
-    {
-        return $this->name;
+    public function getFirstName() {
+        return $this->firstName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName($lastName) {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string 
+     */
+    public function getLastName() {
+        return $this->lastName;
+    }
+
+    /**
+     * Get displayName
+     *
+     * @return string 
+     */
+    public function getDisplayName() {
+        return $this->firstName . ' ' . \substr($this->lastName, 0, 1) . '.';
     }
 
     /**
@@ -119,10 +150,9 @@ class User
      * @param string $email
      * @return User
      */
-    public function setEmail($email)
-    {
+    public function setEmail($email) {
         $this->email = $email;
-    
+
         return $this;
     }
 
@@ -131,8 +161,7 @@ class User
      *
      * @return string 
      */
-    public function getEmail()
-    {
+    public function getEmail() {
         return $this->email;
     }
 
@@ -142,10 +171,9 @@ class User
      * @param \DateTime $birthDate
      * @return User
      */
-    public function setBirthDate($birthDate)
-    {
+    public function setBirthDate($birthDate) {
         $this->birthDate = $birthDate;
-    
+
         return $this;
     }
 
@@ -154,21 +182,31 @@ class User
      *
      * @return \DateTime 
      */
-    public function getBirthDate()
-    {
+    public function getBirthDate() {
         return $this->birthDate;
     }
-    
-     /**
+
+    /**
+     * Get age
+     *
+     * @return string
+     */
+    public function getAge() {
+        if ($this->birthDate === null) {
+            return null;
+        }
+        return $this->birthDate->diff(new \DateTime('now'))->y;
+    }
+
+    /**
      * Set profilePic
      *
      * @param string $profilePic
      * @return User
      */
-    public function setProfilePic($profilePic)
-    {
+    public function setProfilePic($profilePic) {
         $this->profilePic = $profilePic;
-    
+
         return $this;
     }
 
@@ -177,8 +215,8 @@ class User
      *
      * @return string 
      */
-    public function getProfilePic()
-    {
+    public function getProfilePic() {
         return $this->profilePic;
     }
+
 }

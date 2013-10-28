@@ -31,6 +31,8 @@ class UserController extends Controller
             return $this->redirect($this->generateUrl('index'));
         }
         
+        $logger->addInfo('User just logged in', array( 'id' => $user->getId(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName() ) );
+                        
         return array(
             'user' => $user
         );

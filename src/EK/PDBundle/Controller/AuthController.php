@@ -29,11 +29,9 @@ class AuthController extends Controller
         if ($facebook->getUser() == 0) {
             $url = $facebook->getLoginUrl(array(
                 'scope' => array(
-                        'email', 'user_activities', 'user_education_history', 'user_birthday', 
-                        'user_interests', 'user_likes', 'user_location', 'user_hometown', 'publish_actions', 'publish_stream',
-                        'picture'
+                        'email', 'user_activities', 'user_birthday', 
+                        'user_interests', 'user_likes', 'picture'
                     ),
-                //'display' => 'popup',
             ));
 
             
@@ -42,17 +40,14 @@ class AuthController extends Controller
         
         $fbUser = $facebook->api('/me');
         $fbPicture = $facebook->api('/me?fields=picture.type(large)');
-//        $fbFriends = $facebook->api('/me?fields=friends.fields(name,picture.type(small))');
-        
-//        var_dump($fbPicture['picture']['data']['url']);
-//        die();
         
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array( 'fbId' => $fbUser['id'] ));
         if ($user === null ) {
             $user = new User();
             $user
                 ->setFbId($fbUser['id'])
-                ->setName($fbUser['name'])
+                ->setFirstName($fbUser['first_name'])
+                ->setLastName($fbUser['last_name'])
                 ->setEmail($fbUser['email'])
                 ->setBirthDate(\DateTime::createFromFormat('d/m/Y', $fbUser['birthday']))
                 ->setProfilePic($fbPicture['picture']['data']['url']);
@@ -60,6 +55,7 @@ class AuthController extends Controller
 
             $em->persist($user);
             $em->flush();
+            $logger->addInfo('New user registered', array( 'id' => $fbUser['id'], 'first_name' => $fbUser['first_name'], 'last_name' => $fbUser['last_name'] ) );
         }
         
         

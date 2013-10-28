@@ -72,3 +72,7 @@ monolog:
             type:  stream
             path:  %kernel.logs_dir%/error_log.log
             level: error
+        info_logger:
+            type:  stream
+            path:  %kernel.logs_dir%/info_log.log
+            level: info       

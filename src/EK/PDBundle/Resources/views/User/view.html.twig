@@ -24,10 +24,10 @@
     </section>
 
     <aside>
-        <h2>Hi, {{ user.name }}!</h2>
-        <img src="{{ user.profilePic }}" alt="{{ user.name }} user picture" />
+        <h2>Hi, {{ user.getDisplayName() }}</h2>
+        <img src="{{ user.profilePic }}" alt="{{ user.firstName }} {{ user.lastName }} user picture" />
         <p>E-mail: {{ user.email }}</p>
-        <p>Birthday: {{ user.birthDate|date('Y-m-d') }}</p>
+        <p>Birthday: {{ user.birthDate|date('Y-m-d') }} ({{ user.getAge() }})</p>
     </aside>
 </main>
 

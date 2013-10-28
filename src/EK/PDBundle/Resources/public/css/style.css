@@ -95,6 +95,10 @@ section {
     border-radius: 10px;
 }
 
+article {
+    padding: 10px;
+}
+
 aside {
     width: 20%;
     display: block;
@@ -120,11 +124,11 @@ aside img {
 }
 
 aside p {
-margin-left: 10px;
-padding-bottom: 5px;
-margin-top: 0;
-margin-bottom: 0;
-word-wrap: break-word;
+    margin-left: 10px;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    word-wrap: break-word;
 }
 
 footer {
