@@ -2,6 +2,7 @@
 
 namespace EK\PDBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection; 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,6 +12,21 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="EK\PDBundle\Entity\UserRepository")
  */
 class User {
+
+    /**
+     * @ORM\OneToMany(targetEntity="Wish", mappedBy="ownerId")
+     */
+    protected $wishes;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="FulfillWish", mappedBy="ownerId")
+     */
+    protected $fulfilledwishes;
+
+    public function __construct() {
+        $this->wishes = new ArrayCollection();
+        $this->fulfilledwishes = new ArrayCollection();
+    }
 
     /**
      * @var integer
@@ -91,6 +107,15 @@ class User {
      */
     public function getFbId() {
         return $this->fbId;
+    }
+
+    /**
+     * Get fbFbFriendListRequest
+     *
+     * @return string 
+     */
+    public function getFbFriendListRequest() {
+        return '/' . $this->fbId . '?fields=friends.fields(id,first_name,birthday,last_name,installed)';
     }
 
     /**
@@ -219,4 +244,70 @@ class User {
         return $this->profilePic;
     }
 
+
+    /**
+     * Add wishes
+     *
+     * @param \EK\PDBundle\Entity\Wish $wishes
+     * @return User
+     */
+    public function addWishe(\EK\PDBundle\Entity\Wish $wishes)
+    {
+        $this->wishes[] = $wishes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove wishes
+     *
+     * @param \EK\PDBundle\Entity\Wish $wishes
+     */
+    public function removeWishe(\EK\PDBundle\Entity\Wish $wishes)
+    {
+        $this->wishes->removeElement($wishes);
+    }
+
+    /**
+     * Get wishes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWishes()
+    {
+        return $this->wishes;
+    }
+
+    /**
+     * Add fulfilledwishes
+     *
+     * @param \EK\PDBundle\Entity\FulfillWish $fulfilledwishes
+     * @return User
+     */
+    public function addFulfilledwishe(\EK\PDBundle\Entity\FulfillWish $fulfilledwishes)
+    {
+        $this->fulfilledwishes[] = $fulfilledwishes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove fulfilledwishes
+     *
+     * @param \EK\PDBundle\Entity\FulfillWish $fulfilledwishes
+     */
+    public function removeFulfilledwishe(\EK\PDBundle\Entity\FulfillWish $fulfilledwishes)
+    {
+        $this->fulfilledwishes->removeElement($fulfilledwishes);
+    }
+
+    /**
+     * Get fulfilledwishes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFulfilledwishes()
+    {
+        return $this->fulfilledwishes;
+    }
 }

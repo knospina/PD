@@ -147,3 +147,16 @@ footer p {
     padding: 10px;
 }
 
+#new-wish {
+    width: 30%;
+    float: right;
+    display: inline-block;
+}
+
+#my-wishes {
+    width: 68%;
+    display: inline-block;
+    float: left;
+    padding-left: 10px;
+}
+

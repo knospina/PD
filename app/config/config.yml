@@ -17,9 +17,16 @@ framework:
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_proxies: ~
-    session:         ~
+    session:
+        name: sesija
+        handler_id: session.handler.redis
     fragments:       ~
     http_method_override: true
+    
+services:
+    session.handler.redis:
+        class: Drak\NativeSession\NativeRedisSessionHandler
+        arguments: [tcp://dev.pd.lv:6379?timeout=2]
 
 # Twig Configuration
 twig:

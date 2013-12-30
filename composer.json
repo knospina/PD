@@ -19,7 +19,8 @@
         "sensio/framework-extra-bundle": "2.3.*",
         "sensio/generator-bundle": "2.3.*",
         "incenteev/composer-parameter-handler": "~2.0",
-        "facebook/php-sdk": "v3.2.2"
+        "facebook/php-sdk": "v3.2.2",
+        "drak/native-session": "*"
     },
     "scripts": {
         "post-install-cmd": [

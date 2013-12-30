@@ -17,23 +17,21 @@
 
         <article>
             <header>
-                <h2>Te būs feed title</h2>
-                <p>Feeda laiks, autors utt</p>
+                <h2>All my - uid: {{ userId }} - friends are here</h2>
             </header>
-                {{ userId }}
 
             <ul>
                 {% for key, friend in friends %}
-                <li>{{ friend.id }}, {{ friend.first_name }}, {{ friend.last_name }}</li>
+                    {% if friend.installed is defined %}
+                        <li>{{ friend.id }}, {{ friend.first_name }}, {{ friend.last_name }}, {{ friend.installed }} {% if friend.birthday is defined %}, {{ friend.birthday }} {% endif %}</li>
+                    {% endif %}
                 {% endfor %}
             </ul>
         </article>
-
     </section>
     {{ include(
-            'EKPDBundle:User:profile.html.twig'
-            ) }}
-
+        'EKPDBundle:User:profile.html.twig'
+    ) }}
 </main>
 
 <footer>

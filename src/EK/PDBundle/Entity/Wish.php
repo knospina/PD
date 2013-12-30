@@ -1,0 +1,240 @@
+<?php
+
+namespace EK\PDBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection; 
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Wish
+ *
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="EK\PDBundle\Entity\WishRepository")
+ */
+class Wish {
+    
+    /**
+     * @ORM\OneToMany(targetEntity="FulfillWish", mappedBy="wishId")
+     */
+    protected $fulfilledwishes;
+
+    public function __construct() {
+        $this->fulfilledwishes = new ArrayCollection();
+    }
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255)
+     */
+    private $url;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="price", type="decimal", scale=2)
+     */
+    private $price;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="status", type="string", length=255)
+     */
+    private $status;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="wishes")
+     * @ORM\JoinColumn(name="ownerId", referencedColumnName="id")
+     */
+    protected $ownerId;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Wish
+     */
+    public function setName($name) {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     * @return Wish
+     */
+    public function setUrl($url) {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string 
+     */
+    public function getUrl() {
+        return $this->url;
+    }
+
+    /**
+     * Set price
+     *
+     * @param float $price
+     * @return Wish
+     */
+    public function setPrice($price) {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return float 
+     */
+    public function getPrice() {
+        return $this->price;
+    }
+
+    /**
+     * Set ownerId
+     *
+     * @param string $ownerId
+     * @return Wish
+     */
+    public function setOwnerId($ownerId) {
+        $this->ownerId = $ownerId;
+
+        return $this;
+    }
+
+    /**
+     * Get ownerId
+     *
+     * @return string 
+     */
+    public function getOwnerId() {
+        return $this->ownerId;
+    }
+
+
+    /**
+     * Set user
+     *
+     * @param \EK\PDBundle\Entity\User $user
+     * @return Wish
+     */
+    public function setUser(\EK\PDBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \EK\PDBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     * @return Wish
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Add fulfilledwishes
+     *
+     * @param \EK\PDBundle\Entity\FulfillWish $fulfilledwishes
+     * @return Wish
+     */
+    public function addFulfilledwishe(\EK\PDBundle\Entity\FulfillWish $fulfilledwishes)
+    {
+        $this->fulfilledwishes[] = $fulfilledwishes;
+    
+        return $this;
+    }
+
+    /**
+     * Remove fulfilledwishes
+     *
+     * @param \EK\PDBundle\Entity\FulfillWish $fulfilledwishes
+     */
+    public function removeFulfilledwishe(\EK\PDBundle\Entity\FulfillWish $fulfilledwishes)
+    {
+        $this->fulfilledwishes->removeElement($fulfilledwishes);
+    }
+
+    /**
+     * Get fulfilledwishes
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFulfilledwishes()
+    {
+        return $this->fulfilledwishes;
+    }
+}

@@ -1,0 +1,18 @@
+{% extends 'EKPDBundle::view.html.twig' %}
+
+{% block content %}
+
+<article>
+    <header>
+        <h2>Te būs feed title</h2>
+        <p>Feeda laiks, autors utt</p>
+    </header>
+
+    <ul>
+    {% for key, friend in friends %}
+            <li>{{ friend.id }}, {{ friend.first_name }}, {{ friend.last_name }}</li>
+    {% endfor %}
+            </ul>
+        </article>
+
+{% endblock %}
