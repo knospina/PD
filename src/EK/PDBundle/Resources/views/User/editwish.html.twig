@@ -1,0 +1,42 @@
+{% extends 'EKPDBundle::base.html.twig' %}
+
+{% block content %}
+
+<header id="main_nav">
+    <nav>
+        <ul>
+            <li>{{ include(
+            'EKPDBundle:User:navigation.html.twig'
+            ) }}</li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <section>
+        <div id='my-wishes'>
+            <h2>My added wishes</h2>
+            <p>Te būs lists ar manām pievienotajām vēlmēm</p>
+            <ul>
+                tukšs
+            </ul>
+        </div>
+        <div id='new-wish'>
+            <header>
+                <h2>Add a new wish</h2>
+                {{ form(wish_form) }}
+            </header>
+        </div>
+    </section>
+
+    {{ include(
+        'EKPDBundle:User:profile.html.twig'
+    ) }}
+</main>
+
+<footer>
+    <p>Wish list 2013 Evita Knospiņa</p>
+</footer>
+
+
+{% endblock %}

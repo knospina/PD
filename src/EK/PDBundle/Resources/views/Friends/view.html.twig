@@ -17,14 +17,30 @@
 
         <article>
             <header>
-                <h2>Vēlmes</h2>
+                <h2>Wishlist of {{ userFirstName }}</h2>
             </header>
-            <ul>
+            <table>
                 {% for key, wish in friends_wish_list %}
-                <li>{{ wish.id }}, {{ wish.name }}, {{ wish.url }}</li>
-                <a href="{{ path('fulfill_wish', {'id': wish.id } ) }}">Fulfill Wish</a>
+                <tr>
+                    <td>
+                        {{ wish.name }}
+                    </td>
+                    <td>
+                        {{ wish.url }}
+                    </td>
+                    <td>
+                        {{ wish.price }}
+                    </td>
+                    <td>
+                        <a href="{{ path('fulfill_wish', {'id': wish.id } ) }}">Fulfill Wish</a>
+                    </td>
+                    <td>
+                        {{ wish.status }}
+                    </td>
+                    
+                </tr>                
                 {% endfor %}
-            </ul>
+            </table>
         </article>
 
     </section>

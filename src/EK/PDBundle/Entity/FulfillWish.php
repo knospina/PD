@@ -20,34 +20,50 @@ class FulfillWish {
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="price", type="decimal", scale=2)
      */
     private $price;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="fulfilledwishes")
      * @ORM\JoinColumn(name="ownerId", referencedColumnName="id")
      */
     protected $ownerId;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Wish", inversedBy="fulfilledwishes")
      * @ORM\JoinColumn(name="wishId", referencedColumnName="id")
      */
     protected $wishId;
 
+    /**
+     * @var string
+     *
+     */
+    private $fbFirstName;
+
+    /**
+     * @var string
+     *
+     */
+    private $fbLastName;
+
+    /**
+     * @var string
+     *
+     */
+    private $fbImage;
 
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -57,10 +73,9 @@ class FulfillWish {
      * @param float $price
      * @return FulfillWish
      */
-    public function setPrice($price)
-    {
+    public function setPrice($price) {
         $this->price = $price;
-    
+
         return $this;
     }
 
@@ -69,8 +84,7 @@ class FulfillWish {
      *
      * @return float 
      */
-    public function getPrice()
-    {
+    public function getPrice() {
         return $this->price;
     }
 
@@ -80,10 +94,9 @@ class FulfillWish {
      * @param \EK\PDBundle\Entity\User $ownerId
      * @return FulfillWish
      */
-    public function setOwnerId(\EK\PDBundle\Entity\User $ownerId = null)
-    {
+    public function setOwnerId(\EK\PDBundle\Entity\User $ownerId = null) {
         $this->ownerId = $ownerId;
-    
+
         return $this;
     }
 
@@ -92,8 +105,7 @@ class FulfillWish {
      *
      * @return \EK\PDBundle\Entity\User 
      */
-    public function getOwnerId()
-    {
+    public function getOwnerId() {
         return $this->ownerId;
     }
 
@@ -103,10 +115,9 @@ class FulfillWish {
      * @param \EK\PDBundle\Entity\Wish $wishId
      * @return FulfillWish
      */
-    public function setWishId(\EK\PDBundle\Entity\Wish $wishId = null)
-    {
+    public function setWishId(\EK\PDBundle\Entity\Wish $wishId = null) {
         $this->wishId = $wishId;
-    
+
         return $this;
     }
 
@@ -115,8 +126,38 @@ class FulfillWish {
      *
      * @return \EK\PDBundle\Entity\Wish 
      */
-    public function getWishId()
-    {
+    public function getWishId() {
         return $this->wishId;
     }
+
+    public function setFbFirstName($fbFirstName) {
+        $this->fbFirstName = $fbFirstName;
+
+        return $this;
+    }
+
+    public function getFbFirstName() {
+        return $this->fbFirstName;
+    }
+
+    public function setFbLastName($fbLastName) {
+        $this->fbLasttName = $fbLastName;
+
+        return $this;
+    }
+
+    public function getFbLastName() {
+        return $this->fbLastName;
+    }
+
+    public function setFbImage($fbImage) {
+        $this->fbImage = $fbImage;
+
+        return $this;
+    }
+
+    public function getFbImage() {
+        return $this->fbImage;
+    }
+
 }

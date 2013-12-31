@@ -80,7 +80,7 @@ class User {
      * @return string 
      */
     public function getFbFriendListRequest($fbId) {
-        return '/' . $fbId . '?fields=friends.fields(id,first_name,birthday,last_name,installed)';
+        return '/' . $fbId . '?fields=friends.fields(id,first_name,birthday,last_name,installed,picture.type(large))';
     }
     
     /**

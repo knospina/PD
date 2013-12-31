@@ -16,12 +16,30 @@
     <section>
         <div id='my-wishes'>
             <h2>My added wishes</h2>
-            <p>Te būs lists ar manām pievienotajām vēlmēm</p>
-            <ul>
+            <table>
                 {% for key, wish in wish_list %}
-                <li>{{ wish.id }}, {{ wish.name }}, {{ wish.url }}</li>
+                <tr>
+                    <td>
+                        {{ wish.name }}
+                    </td>
+                    <td>
+                        {{ wish.url }}
+                    </td>
+                    <td>
+                        {{ wish.price }}
+                    </td>
+                    <td>
+                        {{ wish.status }}
+                    </td>
+                    <td>
+                        <a href="{{ path('edit_wish', {'userid': userId, 'wishid': wish.id  } ) }}">Edit wish</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('delete_wish', {'userid': userId, 'wishid': wish.id  } ) }}">Delete wish</a>
+                    </td>
+                </tr>  
                 {% endfor %}
-            </ul>
+            </table>
         </div>
         <div id='new-wish'>
             <header>

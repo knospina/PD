@@ -123,6 +123,19 @@ class FriendsController extends Controller {
         //    );
         //}
         
+        $fulfilledWish = $em->getRepository('EKPDBundle:FulfillWish')->findBy(array('wishId' => $id), array('id' => 'DESC'));
+        
+        /*foreach ($fulfilledWish as $wish2) {
+            print_r($wish2->getOwnerId()->getFbId());
+            print_r($wish2->getPrice());
+        }*/
+        
+        foreach ($fulfilledWish as $item) {
+            $item->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($item->getOwnerId()->getFbId())));
+            $item->setFbLastName($facebook->api($user->getFbProfileLastNameRequest($item->getOwnerId()->getFbId())));
+            $item->setFbImage($facebook->api($user->getFbProfilePicRequest($item->getOwnerId()->getFbId())));
+        }
+        
         $fulfillWish = new FulfillWish();
         $form = $this->createFormBuilder($fulfillWish)
                 ->add('price', 'text')
@@ -139,6 +152,8 @@ class FriendsController extends Controller {
                             $this->generateUrl('view_user', array('id' => $user->getId()))
             );
         }
+        
+        
 
         if (!empty($userId)) {
             return array(
@@ -152,8 +167,9 @@ class FriendsController extends Controller {
                 'userLastName' => $fbLastName['last_name'],
                 //'friends' => $fbFriends['friends']['data'],
                 'userId' => $userId,
-                'fulfill_form' => $form->createView()
+                'fulfill_form' => $form->createView(),
                 //'friends_wish_list' => $friendsWishList
+                'fulfilled_section' => $fulfilledWish
             );
         } else {
             return $this->redirect($this->generateUrl('index'));

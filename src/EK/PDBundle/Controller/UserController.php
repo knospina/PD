@@ -144,7 +144,7 @@ class UserController extends Controller {
             $em->persist($wish);
             $em->flush();
             return $this->redirect(
-                            $this->generateUrl('view_user', array('id' => $user->getId()))
+                            $this->generateUrl('view_wish', array('id' => $user->getId()))
             );
         }
 
@@ -163,53 +163,197 @@ class UserController extends Controller {
         } else {
             return $this->redirect($this->generateUrl('index'));
         }
+    }
 
-        /* Te buus forma */
+    /**
+     * @Route("/user/{userid}/edit_wish/{wishid}", name="edit_wish")
+     * @Template()
+     */
+    public function editwishAction($userid, $wishid, Request $request) {
 
-
-
-
-
-
-
-
-        //$all = $this->all();
-        var_dump($id);
-        //$logger = $this->get('logger');
+        $logger = $this->get('logger');
         /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
 
-        //$user = $em->getRepository('EKPDBundle:User')->findOneBy(array( 'id' => $id ));
-        //if ($user === null) {
-        //$logger = $this->get('logger');
+        $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $userid));
+        if ($user === null) {
+            $logger = $this->get('logger');
+            /* @var $logger \Symfony\Bridge\Monolog\Logger */
+
+            $logger->addError('Requested user with id does not exist.', array('id' => $userid));
+
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        $facebook = new Facebook(array(
+            'appId' => '225275277639484',
+            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+        ));
+
+        $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
+        $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
+        $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
+        $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
+        $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
+
+        $userId = $this->get('session')->get('userId');
+
+        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findByOwnerId($userId);
+        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
+        //        array('ownerId' => $userId)
+        //);
+        //if (!$myWishList) {
+        //    throw $this->createNotFoundException(
+        //             'No product found for id ' . $userId
+        //     );
+        //}
+        //$product->setName('New product name!');
+        //$em->flush();
+        //return $this->redirect($this->generateUrl('homepage'));
+        // public function newAction(Request $request)
+        //{
+        // create a task and give it some dummy data for this example
+        //$task = new Task();
+        //$task->setTask('Write a blog post');
+        //$task->setDueDate(new \DateTime('tomorrow'));
+        //$form = $this->createFormBuilder($task)
+        //    ->add('task', 'text')
+        //    ->add('dueDate', 'date')
+        //    ->add('save', 'submit')
+        //    ->getForm();
+        // return $this->render('AcmeTaskBundle:Default:new.html.twig', array(
+        //     'form' => $form->createView(),
+        // ));
+        //}
+
+
+        $wish = new Wish();
+        $wish = $em->getRepository('EKPDBundle:Wish')->find($wishid);
+
+        if (!$wish) {
+            throw $this->createNotFoundException(
+                    'No wish found for id ' . $wishid
+            );
+        }
+        $wish->setName($wish->getName());
+        $wish->setUrl($wish->getUrl());
+        $wish->setPrice($wish->getPrice());
+        $wish->setStatus($wish->getStatus());
+        $form = $this->createFormBuilder($wish)
+                ->add('name', 'text')
+                ->add('url', 'text')
+                ->add('price', 'text')
+                ->add('status', 'text')
+                ->add('save', 'submit')
+                ->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $wish->setOwnerId($user);
+            $em->persist($wish);
+            $em->flush();
+            return $this->redirect(
+                            $this->generateUrl('view_wish', array('id' => $user->getId()))
+            );
+        }
+
+        if ($userId == $userid) {
+            return array(
+                'user' => $user,
+                'friends' => $fbFriends['friends']['data'],
+                'userId' => $userId,
+                'userPic' => $fbPic['picture']['data']['url'],
+                'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
+                'userFirstName' => $fbFirstName['first_name'],
+                'userLastName' => $fbLastName['last_name'],
+                'wish_form' => $form->createView()
+                    //'wish_list' => $myWishList
+            );
+        } else {
+            return $this->redirect($this->generateUrl('index'));
+        }
+    }
+
+    /**
+     * @Route("/user/{userid}/delete_wish/{wishid}", name="delete_wish")
+     * @Template()
+     */
+    public function deletewishAction($userid, $wishid, Request $request) {
+
+        $logger = $this->get('logger');
         /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
-        //$logger->addError('Requested user with id does not exist.', array( 'id' => $id ));
-        //return $this->redirect($this->generateUrl('index'));
-        //}
-        //$facebook = new Facebook(array(
-        //'appId'  => '225275277639484',
-        //'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
-        //));
-        //$fbFriends = $facebook->api($user->getFbFriendListRequest());    
-        //var_dump($fbFriends['friends']['data']);
-        //die();
-        //$logger->addInfo('User just logged in', array( 'id' => $user->getId(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName() ) );
-        //$session = new Session();
-        //$session->start();
-        // set and get session attributes
-        //$session->set('name', 'Drak');
-        //$session->get('name');
-        //return array(
-        //'user' => $user,
-        //'friends' => $fbFriends['friends']['data']
-        //);
+        $em = $this->get('doctrine.orm.entity_manager');
+        /* @var $em \Doctrine\ORM\EntityManager */
 
-        /* return $this->redirect(
-          $this->generateUrl('view_user', array('id' => $user->getId()))
-          ); */
+        $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $userid));
+        if ($user === null) {
+            $logger = $this->get('logger');
+            /* @var $logger \Symfony\Bridge\Monolog\Logger */
+
+            $logger->addError('Requested user with id does not exist.', array('id' => $userid));
+
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        $facebook = new Facebook(array(
+            'appId' => '225275277639484',
+            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+        ));
+
+        $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
+        $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
+        $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
+        $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
+        $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
+
+        $userId = $this->get('session')->get('userId');
+
+        $wish = $em->getRepository('EKPDBundle:Wish')->find($wishid);
+
+        if (!$wish) {
+            throw $this->createNotFoundException(
+                    'No product found for id ' . $wishid
+            );
+        } else {
+            $em->remove($wish);
+            $em->flush();
+            return $this->redirect(
+                            $this->generateUrl('view_wish', array('id' => $user->getId()))
+            );
+        }
+
+
+
+        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findByOwnerId($userId);
+
+        $myWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
+                array('ownerId' => $userId)
+        );
+
+        if (!$myWishList) {
+            throw $this->createNotFoundException(
+                    'No product found for id ' . $userId
+            );
+        }
+
+        if ($userId == $id) {
+            return array(
+                'user' => $user,
+                'friends' => $fbFriends['friends']['data'],
+                'userId' => $userId,
+                'userPic' => $fbPic['picture']['data']['url'],
+                'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
+                'userFirstName' => $fbFirstName['first_name'],
+                'userLastName' => $fbLastName['last_name'],
+                'wish_form' => $form->createView(),
+                'wish_list' => $myWishList
+            );
+        } else {
+            return $this->redirect($this->generateUrl('index'));
+        }
     }
 
     /**
@@ -248,7 +392,7 @@ class UserController extends Controller {
         $allWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
                 array(), array('id' => 'DESC')
         );
-        
+
         foreach ($allWishList as $wish) {
             $wish->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($wish->getOwnerId()->getFbId())));
             $wish->setFbLastName($facebook->api($user->getFbProfileLastNameRequest($wish->getOwnerId()->getFbId())));
@@ -313,7 +457,7 @@ class UserController extends Controller {
         $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
         $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
         $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
-                
+
         $userId = $this->get('session')->get('userId');
 
         if ($userId == $id) {
