@@ -41,25 +41,40 @@ class UserController extends Controller {
             'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
         ));
 
-        $fbFriends = $facebook->api($user->getFbFriendListRequest());
-        //var_dump($fbFriends['friends']['data']);
-        //die();
+        $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
+        $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
+        $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
+        $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
+        $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
 
-        $logger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName()));
+        $allWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
+                array(), array('id' => 'DESC')
+        );
 
-        //$session = new Session();
-        //$session->start();
-        // set and get session attributes
-        //$session->set('name', 'Drak');
-        //$session->get('name');
+        foreach ($allWishList as $wish) {
+            $wish->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($wish->getOwnerId()->getFbId())));
+            $wish->setFbLastName($facebook->api($user->getFbProfileLastNameRequest($wish->getOwnerId()->getFbId())));
+            $wish->setFbImage($facebook->api($user->getFbProfilePicRequest($wish->getOwnerId()->getFbId())));
+        }
+
+        if (!$allWishList) {
+            throw $this->createNotFoundException(
+                    'No product found for id ' . $userId
+            );
+        }
+
+        $logger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $fbFirstName['first_name'], 'last_name' => $fbLastName['last_name']));
+
         $userId = $this->get('session')->get('userId');
-        //var_dump($this->get('session')->all());
-        //die();
 
         if ($userId == $id) {
             return array(
                 'user' => $user,
-                'friends' => $fbFriends['friends']['data'],
+                'userPic' => $fbPic['picture']['data']['url'],
+                'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
+                'userFirstName' => $fbFirstName['first_name'],
+                'userLastName' => $fbLastName['last_name'],
+                'wishes' => $allWishList,
                 'userId' => $userId
             );
         } else {
@@ -94,7 +109,11 @@ class UserController extends Controller {
             'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
         ));
 
-        $fbFriends = $facebook->api($user->getFbFriendListRequest());
+        $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
+        $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
+        $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
+        $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
+        $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
 
         $userId = $this->get('session')->get('userId');
 
@@ -134,14 +153,16 @@ class UserController extends Controller {
                 'user' => $user,
                 'friends' => $fbFriends['friends']['data'],
                 'userId' => $userId,
+                'userPic' => $fbPic['picture']['data']['url'],
+                'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
+                'userFirstName' => $fbFirstName['first_name'],
+                'userLastName' => $fbLastName['last_name'],
                 'wish_form' => $form->createView(),
                 'wish_list' => $myWishList
             );
         } else {
             return $this->redirect($this->generateUrl('index'));
         }
-
-
 
         /* Te buus forma */
 
@@ -218,58 +239,45 @@ class UserController extends Controller {
             'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
         ));
 
-        $fbFriends = $facebook->api($user->getFbFriendListRequest());
+        $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
+        $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
+        $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
+        $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
+        $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
+
+        $allWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
+                array(), array('id' => 'DESC')
+        );
+        
+        foreach ($allWishList as $wish) {
+            $wish->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($wish->getOwnerId()->getFbId())));
+            $wish->setFbLastName($facebook->api($user->getFbProfileLastNameRequest($wish->getOwnerId()->getFbId())));
+            $wish->setFbImage($facebook->api($user->getFbProfilePicRequest($wish->getOwnerId()->getFbId())));
+        }
+
+        if (!$allWishList) {
+            throw $this->createNotFoundException(
+                    'No product found for id ' . $userId
+            );
+        }
+
+        $logger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $fbFirstName['first_name'], 'last_name' => $fbLastName['last_name']));
 
         $userId = $this->get('session')->get('userId');
-        //var_dump($this->get('session')->all());
-        //die();
 
         if ($userId == $id) {
             return array(
                 'user' => $user,
-                'friends' => $fbFriends['friends']['data'],
+                'userPic' => $fbPic['picture']['data']['url'],
+                'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
+                'userFirstName' => $fbFirstName['first_name'],
+                'userLastName' => $fbLastName['last_name'],
+                'wishes' => $allWishList,
                 'userId' => $userId
             );
         } else {
             return $this->redirect($this->generateUrl('index'));
         }
-        //$all = $this->all();
-        var_dump($id);
-        //$logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
-
-        $em = $this->get('doctrine.orm.entity_manager');
-        /* @var $em \Doctrine\ORM\EntityManager */
-
-        //$user = $em->getRepository('EKPDBundle:User')->findOneBy(array( 'id' => $id ));
-        //if ($user === null) {
-        //$logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
-
-        //$logger->addError('Requested user with id does not exist.', array( 'id' => $id ));
-        //return $this->redirect($this->generateUrl('index'));
-        //}
-        //$facebook = new Facebook(array(
-        //'appId'  => '225275277639484',
-        //'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
-        //));
-        //$fbFriends = $facebook->api($user->getFbFriendListRequest());    
-        //var_dump($fbFriends['friends']['data']);
-        //die();
-        //$logger->addInfo('User just logged in', array( 'id' => $user->getId(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName() ) );
-        //$session = new Session();
-        //$session->start();
-        // set and get session attributes
-        //$session->set('name', 'Drak');
-        //$session->get('name');
-        //return array(
-        //'user' => $user,
-        //'friends' => $fbFriends['friends']['data']
-        //);
-
-        /* return $this->redirect(
-          $this->generateUrl('view_user', array('id' => $user->getId()))
-          ); */
     }
 
     /**
@@ -300,60 +308,27 @@ class UserController extends Controller {
             'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
         ));
 
-        $fbFriends = $facebook->api($user->getFbFriendListRequest());
-        //var_dump($fbFriends);
-        //die();
-
+        $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
+        $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
+        $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
+        $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
+        $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
+                
         $userId = $this->get('session')->get('userId');
-        //var_dump($this->get('session')->all());
-        //die();
 
         if ($userId == $id) {
             return array(
                 'user' => $user,
+                'userPic' => $fbPic['picture']['data']['url'],
+                'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
+                'userFirstName' => $fbFirstName['first_name'],
+                'userLastName' => $fbLastName['last_name'],
                 'friends' => $fbFriends['friends']['data'],
                 'userId' => $userId
             );
         } else {
             return $this->redirect($this->generateUrl('index'));
         }
-        //$all = $this->all();
-        var_dump($id);
-        //$logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
-
-        $em = $this->get('doctrine.orm.entity_manager');
-        /* @var $em \Doctrine\ORM\EntityManager */
-
-        //$user = $em->getRepository('EKPDBundle:User')->findOneBy(array( 'id' => $id ));
-        //if ($user === null) {
-        //$logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
-
-        //$logger->addError('Requested user with id does not exist.', array( 'id' => $id ));
-        //return $this->redirect($this->generateUrl('index'));
-        //}
-        //$facebook = new Facebook(array(
-        //'appId'  => '225275277639484',
-        //'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
-        //));
-        //$fbFriends = $facebook->api($user->getFbFriendListRequest());    
-        //var_dump($fbFriends['friends']['data']);
-        //die();
-        //$logger->addInfo('User just logged in', array( 'id' => $user->getId(), 'first_name' => $user->getFirstName(), 'last_name' => $user->getLastName() ) );
-        //$session = new Session();
-        //$session->start();
-        // set and get session attributes
-        //$session->set('name', 'Drak');
-        //$session->get('name');
-        //return array(
-        //'user' => $user,
-        //'friends' => $fbFriends['friends']['data']
-        //);
-
-        /* return $this->redirect(
-          $this->generateUrl('view_user', array('id' => $user->getId()))
-          ); */
     }
 
     /**

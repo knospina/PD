@@ -5,6 +5,10 @@ body {
     color: #556270;
 }
 
+ul li {
+    list-style: none;
+}
+
 /* Login page */
 
 #login {

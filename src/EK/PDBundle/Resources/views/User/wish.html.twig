@@ -14,24 +14,26 @@
 
 <main>
     <section>
-
-        <article>
-            <header>
-                <h2>Vēlmes</h2>
-            </header>
+        <div id='my-wishes'>
+            <h2>My added wishes</h2>
+            <p>Te būs lists ar manām pievienotajām vēlmēm</p>
             <ul>
-                {% for key, wish in friends_wish_list %}
+                {% for key, wish in wish_list %}
                 <li>{{ wish.id }}, {{ wish.name }}, {{ wish.url }}</li>
-                <a href="{{ path('fulfill_wish', {'id': wish.id } ) }}">Fulfill Wish</a>
                 {% endfor %}
             </ul>
-        </article>
-
+        </div>
+        <div id='new-wish'>
+            <header>
+                <h2>Add a new wish</h2>
+                {{ form(wish_form) }}
+            </header>
+        </div>
     </section>
-    {{ include(
-            'EKPDBundle:User:profile.html.twig'
-            ) }}
 
+    {{ include(
+        'EKPDBundle:User:profile.html.twig'
+    ) }}
 </main>
 
 <footer>

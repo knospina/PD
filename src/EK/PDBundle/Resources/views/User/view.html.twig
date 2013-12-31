@@ -20,13 +20,19 @@
                 <h2>Te būs feed title</h2>
                 <p>Feeda laiks, autors utt</p>
             </header>
-                {{ userId }}
 
-            <ul>
-                {% for key, friend in friends %}
-                <li>{{ friend.id }}, {{ friend.first_name }}, {{ friend.last_name }}</li>
+            <table>
+                {% for key, wish in wishes %}
+                <tr>
+                    <td>{{wish.getFbFirstName.first_name}}</td>
+                    <td><img src='{{wish.getFbImage.picture.data.url}}' width='100' height='100' alt='{{wish.getFbFirstName.first_name}} profile picture' /></td>
+                    <td>{{ wish.name }}</td>
+                    <td>{{ wish.url }}</td>
+                    <td>{{ wish.price }}</td>
+                    <td>{{ wish.getOwnerId.getFbId }}</td>
+                </tr>                
                 {% endfor %}
-            </ul>
+            </table>
         </article>
 
     </section>

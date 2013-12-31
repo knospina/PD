@@ -17,16 +17,29 @@
 
         <article>
             <header>
-                <h2>All my - uid: {{ userId }} - friends are here</h2>
+                <h2>My friends are here</h2>
             </header>
 
-            <ul>
-                {% for key, friend in friends %}
-                    {% if friend.installed is defined %}
-                        <li>{{ friend.id }}, {{ friend.first_name }}, {{ friend.last_name }}, {{ friend.installed }} {% if friend.birthday is defined %}, {{ friend.birthday }} {% endif %}</li>
-                    {% endif %}
+            <table>
+                   {% for key, friend in friends %}
+                        {% if friend.installed is defined %}
+                    <tr>
+                        <td>
+                            <img src='{% if friend.picture is defined %}{{ friend.picture.data.url }} {% endif %}' height='100' width='100' alt='prof pic' />
+                        </td>
+                        <td>
+                            {{ friend.first_name }} {{ friend.last_name }}
+                        </td>
+                        <td>
+                            {% if friend.birthday is defined %} {{ friend.birthday }} {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('view_friend', {'id': friend.id } ) }}">His profile</a>
+                        </td>
+                    </tr>
+                       {% endif %} 
                 {% endfor %}
-            </ul>
+            </table>
         </article>
     </section>
     {{ include(

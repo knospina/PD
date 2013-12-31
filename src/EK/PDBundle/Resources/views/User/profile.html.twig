@@ -1,0 +1,5 @@
+<aside>
+    <h2>Hi, {{ user.getDisplayName(userFirstName, userLastName) }}</h2>
+    <img src="{{ userPic }}" alt="{{ userFirstName }} {{ userLastName }} user picture" />
+    <p>Birthday: {{ userBirthDay|date('Y-m-d') }} ({{ user.getAge(userBirthDay) }})</p>
+</aside>

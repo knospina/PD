@@ -17,14 +17,16 @@
 
         <article>
             <header>
-                <h2>Vēlmes</h2>
+                <h2>Te būs user jaunumi</h2>
+                <p>Wish lists, dzimšanas diena</p>
             </header>
+
             <ul>
-                {% for key, wish in friends_wish_list %}
                 <li>{{ wish.id }}, {{ wish.name }}, {{ wish.url }}</li>
-                <a href="{{ path('fulfill_wish', {'id': wish.id } ) }}">Fulfill Wish</a>
-                {% endfor %}
             </ul>
+            <p>Fulfill</p>
+            {{ form(fulfill_form) }}
+
         </article>
 
     </section>

@@ -45,41 +45,6 @@ class User {
     private $fbId;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="firstName", type="string", length=255)
-     */
-    private $firstName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lastName", type="string", length=255)
-     */
-    private $lastName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255)
-     */
-    private $email;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="birthDate", type="date")
-     */
-    private $birthDate;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="profilePic", type="string", length=255)
-     */
-    private $profilePic;
-
-    /**
      * Get id
      *
      * @return integer 
@@ -114,50 +79,44 @@ class User {
      *
      * @return string 
      */
-    public function getFbFriendListRequest() {
-        return '/' . $this->fbId . '?fields=friends.fields(id,first_name,birthday,last_name,installed)';
+    public function getFbFriendListRequest($fbId) {
+        return '/' . $fbId . '?fields=friends.fields(id,first_name,birthday,last_name,installed,picture.type(large))';
     }
-
+    
     /**
-     * Set firstName
-     *
-     * @param string $firstName
-     * @return User
-     */
-    public function setFirstName($firstName) {
-        $this->firstName = $firstName;
-
-        return $this;
-    }
-
-    /**
-     * Get firstName
+     * Get fbFbProfilePicRequest
      *
      * @return string 
      */
-    public function getFirstName() {
-        return $this->firstName;
+    public function getFbProfilePicRequest($fbId) {
+        return '/' . $fbId . '?fields=picture.type(large)';
     }
-
+    
     /**
-     * Set lastName
-     *
-     * @param string $lastName
-     * @return User
-     */
-    public function setLastName($lastName) {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
-
-    /**
-     * Get lastName
+     * Get fbFbProfileBirthdayRequest
      *
      * @return string 
      */
-    public function getLastName() {
-        return $this->lastName;
+    public function getFbProfileBirthdayRequest($fbId) {
+        return '/' . $fbId . '?fields=birthday';
+    }
+    
+    /**
+     * Get fbFbProfileFirstNameRequest
+     *
+     * @return string 
+     */
+    public function getFbProfileFirstNameRequest($fbId) {
+        return '/' . $fbId . '?fields=first_name';
+    }
+    
+    /**
+     * Get fbFbProfileLastNameRequest
+     *
+     * @return string 
+     */
+    public function getFbProfileLastNameRequest($fbId) {
+        return '/' . $fbId . '?fields=last_name';
     }
 
     /**
@@ -165,50 +124,8 @@ class User {
      *
      * @return string 
      */
-    public function getDisplayName() {
-        return $this->firstName . ' ' . \substr($this->lastName, 0, 1) . '.';
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     * @return User
-     */
-    public function setEmail($email) {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string 
-     */
-    public function getEmail() {
-        return $this->email;
-    }
-
-    /**
-     * Set birthDate
-     *
-     * @param \DateTime $birthDate
-     * @return User
-     */
-    public function setBirthDate($birthDate) {
-        $this->birthDate = $birthDate;
-
-        return $this;
-    }
-
-    /**
-     * Get birthDate
-     *
-     * @return \DateTime 
-     */
-    public function getBirthDate() {
-        return $this->birthDate;
+    public function getDisplayName($first_name, $last_name) {
+        return $first_name . ' ' . \substr($last_name, 0, 1) . '.';
     }
 
     /**
@@ -216,34 +133,12 @@ class User {
      *
      * @return string
      */
-    public function getAge() {
-        if ($this->birthDate === null) {
+    public function getAge($date) {
+        if ($date === null) {
             return null;
         }
-        return $this->birthDate->diff(new \DateTime('now'))->y;
+        return $date->diff(new \DateTime('now'))->y;
     }
-
-    /**
-     * Set profilePic
-     *
-     * @param string $profilePic
-     * @return User
-     */
-    public function setProfilePic($profilePic) {
-        $this->profilePic = $profilePic;
-
-        return $this;
-    }
-
-    /**
-     * Get profilePic
-     *
-     * @return string 
-     */
-    public function getProfilePic() {
-        return $this->profilePic;
-    }
-
 
     /**
      * Add wishes
