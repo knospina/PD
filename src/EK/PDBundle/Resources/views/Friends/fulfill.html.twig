@@ -30,9 +30,6 @@
                     <td>
                         {{ wish.price }}
                     </td>
-                    <td>
-                        {{ wish.status }}
-                    </td>
                 </tr>
             </table>
             <p>Others are ready to pay:</p>
@@ -42,7 +39,6 @@
                     <td>{{fulfilled.getFbFirstName.first_name}}</td>
                     <td><img src='{{fulfilled.getFbImage.picture.data.url}}' width='100' height='100' alt='{{fulfilled.getFbFirstName.first_name}} profile picture' /></td>
                     <td>{{ fulfilled.price }}</td>
-                    <td>{{ fulfilled.getOwnerId.getFbId }}</td>
                 </tr>                
                 {% endfor %}
             </table>

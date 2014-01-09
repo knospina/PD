@@ -27,7 +27,7 @@
                     <td>{{ wish.name }}</td>
                     <td>{{ wish.url }}</td>
                     <td>{{ wish.price }}</td>
-                    <td>{{ wish.getOwnerId.getFbId }}</td>
+                    <td><a href="{{ path('fulfill_wish', {'id': wish.id } ) }}">Fulfill Wish</a></td>
                 </tr>                
                 {% endfor %}
             </table>

@@ -13,6 +13,9 @@ use \Facebook;
 
 class UserController extends Controller {
 
+    public $appId = '225275277639484';
+    public $secret = '4777721b7ff46fbe1cf90fa9ca54088e';
+    
     /**
      * @Route("/user/{id}", name="view_user")
      * @Template()
@@ -28,17 +31,15 @@ class UserController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('id' => $id));
-
             return $this->redirect($this->generateUrl('index'));
+            
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
@@ -55,12 +56,6 @@ class UserController extends Controller {
             $wish->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($wish->getOwnerId()->getFbId())));
             $wish->setFbLastName($facebook->api($user->getFbProfileLastNameRequest($wish->getOwnerId()->getFbId())));
             $wish->setFbImage($facebook->api($user->getFbProfilePicRequest($wish->getOwnerId()->getFbId())));
-        }
-
-        if (!$allWishList) {
-            throw $this->createNotFoundException(
-                    'No product found for id ' . $userId
-            );
         }
 
         $logger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $fbFirstName['first_name'], 'last_name' => $fbLastName['last_name']));
@@ -96,17 +91,15 @@ class UserController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('id' => $id));
-
             return $this->redirect($this->generateUrl('index'));
+            
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
@@ -117,16 +110,12 @@ class UserController extends Controller {
 
         $userId = $this->get('session')->get('userId');
 
-        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findByOwnerId($userId);
-
         $myWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
                 array('ownerId' => $userId)
         );
 
         if (!$myWishList) {
-            throw $this->createNotFoundException(
-                    'No product found for id ' . $userId
-            );
+            $logger->addInfo('Wishlist for user with this id is empty', array('id' => $id));
         }
 
         $wish = new Wish();
@@ -134,7 +123,7 @@ class UserController extends Controller {
                 ->add('name', 'text')
                 ->add('url', 'text')
                 ->add('price', 'text')
-                ->add('status', 'text')
+                ->add('status', 'hidden', array('data' => 'active'))
                 ->add('save', 'submit')
                 ->getForm();
         $form->handleRequest($request);
@@ -179,8 +168,6 @@ class UserController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $userid));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('id' => $userid));
 
@@ -188,8 +175,8 @@ class UserController extends Controller {
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
@@ -200,43 +187,13 @@ class UserController extends Controller {
 
         $userId = $this->get('session')->get('userId');
 
-        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findByOwnerId($userId);
-        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
-        //        array('ownerId' => $userId)
-        //);
-        //if (!$myWishList) {
-        //    throw $this->createNotFoundException(
-        //             'No product found for id ' . $userId
-        //     );
-        //}
-        //$product->setName('New product name!');
-        //$em->flush();
-        //return $this->redirect($this->generateUrl('homepage'));
-        // public function newAction(Request $request)
-        //{
-        // create a task and give it some dummy data for this example
-        //$task = new Task();
-        //$task->setTask('Write a blog post');
-        //$task->setDueDate(new \DateTime('tomorrow'));
-        //$form = $this->createFormBuilder($task)
-        //    ->add('task', 'text')
-        //    ->add('dueDate', 'date')
-        //    ->add('save', 'submit')
-        //    ->getForm();
-        // return $this->render('AcmeTaskBundle:Default:new.html.twig', array(
-        //     'form' => $form->createView(),
-        // ));
-        //}
-
-
         $wish = new Wish();
         $wish = $em->getRepository('EKPDBundle:Wish')->find($wishid);
 
         if (!$wish) {
-            throw $this->createNotFoundException(
-                    'No wish found for id ' . $wishid
-            );
+            $logger->addError('Requested wish with this id does not exist', array('id' => $wishid));
         }
+        
         $wish->setName($wish->getName());
         $wish->setUrl($wish->getUrl());
         $wish->setPrice($wish->getPrice());
@@ -245,7 +202,7 @@ class UserController extends Controller {
                 ->add('name', 'text')
                 ->add('url', 'text')
                 ->add('price', 'text')
-                ->add('status', 'text')
+                ->add('status', 'hidden', array('data' => 'active'))
                 ->add('save', 'submit')
                 ->getForm();
         $form->handleRequest($request);
@@ -269,7 +226,6 @@ class UserController extends Controller {
                 'userFirstName' => $fbFirstName['first_name'],
                 'userLastName' => $fbLastName['last_name'],
                 'wish_form' => $form->createView()
-                    //'wish_list' => $myWishList
             );
         } else {
             return $this->redirect($this->generateUrl('index'));
@@ -290,17 +246,14 @@ class UserController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $userid));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('id' => $userid));
-
             return $this->redirect($this->generateUrl('index'));
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
@@ -314,32 +267,27 @@ class UserController extends Controller {
         $wish = $em->getRepository('EKPDBundle:Wish')->find($wishid);
 
         if (!$wish) {
-            throw $this->createNotFoundException(
-                    'No product found for id ' . $wishid
+            $logger->addError('Requested wish with this id does not exist', array('id' => $wishid));
+            return $this->redirect(
+                $this->generateUrl('view_wish', array('id' => $user->getId()))
             );
         } else {
             $em->remove($wish);
             $em->flush();
             return $this->redirect(
-                            $this->generateUrl('view_wish', array('id' => $user->getId()))
+                $this->generateUrl('view_wish', array('id' => $user->getId()))
             );
         }
-
-
-
-        //$myWishList = $em->getRepository('EKPDBundle:Wish')->findByOwnerId($userId);
 
         $myWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
                 array('ownerId' => $userId)
         );
 
         if (!$myWishList) {
-            throw $this->createNotFoundException(
-                    'No product found for id ' . $userId
-            );
+            $logger->addInfo('Wish list for user with this id is empty', array('id' => $userid));
         }
 
-        if ($userId == $id) {
+        if ($userId == $userid) {
             return array(
                 'user' => $user,
                 'friends' => $fbFriends['friends']['data'],
@@ -370,17 +318,14 @@ class UserController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('id' => $id));
-
             return $this->redirect($this->generateUrl('index'));
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
@@ -388,10 +333,15 @@ class UserController extends Controller {
         $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
         $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
         $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
-
-        $allWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
-                array(), array('id' => 'DESC')
-        );
+        
+        $userId = $this->get('session')->get('userId');
+        
+        $allWishList = $em->getRepository('EKPDBundle:Wish')->createQueryBuilder('p')
+                            ->where('p.ownerId != :ownerId')
+                            ->setParameter('ownerId', $userId)
+                            ->orderBy('p.id', 'DESC')
+                            ->getQuery()
+                            ->getResult();
 
         foreach ($allWishList as $wish) {
             $wish->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($wish->getOwnerId()->getFbId())));
@@ -400,14 +350,8 @@ class UserController extends Controller {
         }
 
         if (!$allWishList) {
-            throw $this->createNotFoundException(
-                    'No product found for id ' . $userId
-            );
-        }
-
-        $logger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $fbFirstName['first_name'], 'last_name' => $fbLastName['last_name']));
-
-        $userId = $this->get('session')->get('userId');
+            $logger->addInfo('Friends wish list for user with this id is empty.', array('id' => $id));
+        }        
 
         if ($userId == $id) {
             return array(
@@ -439,17 +383,14 @@ class UserController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('id' => $id));
-
             return $this->redirect($this->generateUrl('index'));
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         $fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
@@ -480,6 +421,9 @@ class UserController extends Controller {
      * @Template()
      */
     public function logoutAction() {
+        $logger = $this->get('logger');
+        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $logger->addInfo('User with this id just logged out', array($this->get('session')->get('userId')));
         $this->get('session')->set('userId', '');
         var_dump($this->get('session')->all());
         return array();

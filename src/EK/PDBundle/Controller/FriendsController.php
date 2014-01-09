@@ -13,6 +13,9 @@ use EK\PDBundle\Entity\FulfillWish;
 use \Facebook;
 
 class FriendsController extends Controller {
+    
+    public $appId = '225275277639484';
+    public $secret = '4777721b7ff46fbe1cf90fa9ca54088e';
 
     /**
      * @Route("/friend/{id}", name="view_friend")
@@ -29,20 +32,16 @@ class FriendsController extends Controller {
 
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('fbId' => $id));
         if ($user === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested user with id does not exist.', array('fbId' => $id));
-
             return $this->redirect($this->generateUrl('index'));
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
-        //$fbFriends = $facebook->api($user->getFbFriendListRequest($user->getFbId()));
         $fbPic = $facebook->api($user->getFbProfilePicRequest($user->getFbId()));
         $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
         $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
@@ -54,21 +53,16 @@ class FriendsController extends Controller {
         );
 
         if (!$friendsWishList) {
-            throw $this->createNotFoundException(
-                    'No wish found for id ' . $user->getId()
-            );
+            $logger->addInfo('Wish list for user with this id is empty.', array('id' => $id));
         }
 
         if (!empty($userId)) {
             return array(
                 'user' => $user,
-                //'friends' => $fbFriends['friends']['data'],
-                //'userId' => $userId
                 'userPic' => $fbPic['picture']['data']['url'],
                 'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
                 'userFirstName' => $fbFirstName['first_name'],
                 'userLastName' => $fbLastName['last_name'],
-                //'friends' => $fbFriends['friends']['data'],
                 'userId' => $userId,
                 'friends_wish_list' => $friendsWishList
             );
@@ -92,17 +86,14 @@ class FriendsController extends Controller {
 
         $wish = $em->getRepository('EKPDBundle:Wish')->findOneBy(array('id' => $id));
         if ($wish === null) {
-            $logger = $this->get('logger');
-            /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
             $logger->addError('Requested wish with id does not exist.', array('id' => $id));
-
             return $this->redirect($this->generateUrl('index'));
         }
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
         
         $userId = $this->get('session')->get('userId');
@@ -112,23 +103,8 @@ class FriendsController extends Controller {
         $fbBirthDay = $facebook->api($user->getFbProfileBirthdayRequest($user->getFbId()));
         $fbFirstName = $facebook->api($user->getFbProfileFirstNameRequest($user->getFbId()));
         $fbLastName = $facebook->api($user->getFbProfileLastNameRequest($user->getFbId()));
-              
-        //$friendsWishList = $em->getRepository('EKPDBundle:Wish')->findBy(
-        //        array('ownerId' => $user->getId())
-        //);
-
-        //if (!$friendsWishList) {
-        //    throw $this->createNotFoundException(
-        //            'No wish found for id ' . $user->getId()
-        //    );
-        //}
-        
+          
         $fulfilledWish = $em->getRepository('EKPDBundle:FulfillWish')->findBy(array('wishId' => $id), array('id' => 'DESC'));
-        
-        /*foreach ($fulfilledWish as $wish2) {
-            print_r($wish2->getOwnerId()->getFbId());
-            print_r($wish2->getPrice());
-        }*/
         
         foreach ($fulfilledWish as $item) {
             $item->setFbFirstName($facebook->api($user->getFbProfileFirstNameRequest($item->getOwnerId()->getFbId())));
@@ -151,24 +127,18 @@ class FriendsController extends Controller {
             return $this->redirect(
                             $this->generateUrl('view_user', array('id' => $user->getId()))
             );
-        }
-        
-        
+        }     
 
         if (!empty($userId)) {
             return array(
                 'wish' => $wish,
                 'user' => $user,
-                //'friends' => $fbFriends['friends']['data'],
-                //'userId' => $userId
                 'userPic' => $fbPic['picture']['data']['url'],
                 'userBirthDay' => (\DateTime::createFromFormat('m/d/Y', $fbBirthDay['birthday'])),
                 'userFirstName' => $fbFirstName['first_name'],
                 'userLastName' => $fbLastName['last_name'],
-                //'friends' => $fbFriends['friends']['data'],
                 'userId' => $userId,
                 'fulfill_form' => $form->createView(),
-                //'friends_wish_list' => $friendsWishList
                 'fulfilled_section' => $fulfilledWish
             );
         } else {

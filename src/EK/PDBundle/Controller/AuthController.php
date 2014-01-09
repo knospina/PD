@@ -12,7 +12,10 @@ use EK\PDBundle\Entity\Wish;
 
 
 class AuthController extends Controller {
-
+    
+    public $appId = '225275277639484';
+    public $secret = '4777721b7ff46fbe1cf90fa9ca54088e';
+    
     /**
      * @Route("/fb-login", name="fb_login")
      */
@@ -24,8 +27,8 @@ class AuthController extends Controller {
         /* @var $em \Doctrine\ORM\EntityManager */
 
         $facebook = new Facebook(array(
-            'appId' => '225275277639484',
-            'secret' => '4777721b7ff46fbe1cf90fa9ca54088e',
+            'appId' => $this->appId,
+            'secret' => $this->secret,
         ));
 
         if ($facebook->getUser() == 0) {
@@ -35,7 +38,6 @@ class AuthController extends Controller {
                 ),
             ));
 
-
             return $this->redirect($url);
         }
 
@@ -44,24 +46,9 @@ class AuthController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('fbId' => $fbUser['id']));
         if ($user === null) {
             $user = new User();
-            $user
-                    ->setFbId($fbUser['id'])
-                    //->setFirstName($fbUser['first_name'])
-                    //->setLastName($fbUser['last_name'])
-                    //->setEmail($fbUser['email'])
-                    //->setBirthDate(\DateTime::createFromFormat('d/m/Y', $fbUser['birthday']));
-                    //->setProfilePic($fbPicture['picture']['data']['url']);
-            ;
-
-            $wish = new Wish();
-            $wish->setName('tests');
-            $wish->setUrl('tests');
-            $wish->setPrice(19.99);
-            $wish->setStatus('active');
-            $wish->setOwnerId($user);
+            $user->setFbId($fbUser['id']);
 
             $em->persist($user);
-            $em->persist($wish);
             $em->flush();
             $logger->addInfo('New user registered', array('id' => $fbUser['id']));
         }
