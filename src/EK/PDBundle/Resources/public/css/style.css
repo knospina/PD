@@ -164,3 +164,13 @@ footer p {
     padding-left: 10px;
 }
 
+#my-wishes .delete {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#form label {
+    display: inline-block;
+    width: 50px;
+}
+

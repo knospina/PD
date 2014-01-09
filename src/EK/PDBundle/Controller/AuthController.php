@@ -20,7 +20,7 @@ class AuthController extends Controller {
      * @Route("/fb-login", name="fb_login")
      */
     public function indexAction() {
-        $logger = $this->get('logger');
+        $infologger = $this->get('my_info');
         /* @var $logger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
@@ -50,7 +50,7 @@ class AuthController extends Controller {
 
             $em->persist($user);
             $em->flush();
-            $logger->addInfo('New user registered', array('id' => $fbUser['id']));
+            $infologger->addInfo('New user registered', array('id' => $fbUser['id']));
         }
 
         $session = new Session();

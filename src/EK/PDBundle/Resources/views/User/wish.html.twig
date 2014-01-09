@@ -18,7 +18,7 @@
             <h2>My added wishes</h2>
             <table>
                 {% for key, wish in wish_list %}
-                <tr>
+                <tr data-delete-url="{{ path('delete_wish', {'userid': userId, 'wishid': wish.id  }) }}">
                     <td>
                         {{ wish.name }}
                     </td>
@@ -32,8 +32,9 @@
                         <a href="{{ path('edit_wish', {'userid': userId, 'wishid': wish.id  } ) }}">Edit wish</a>
                     </td>
                     <td>
-                        <a href="{{ path('delete_wish', {'userid': userId, 'wishid': wish.id  } ) }}">Delete wish</a>
+                        <span class="delete">Delete wish</span>
                     </td>
+
                 </tr>  
                 {% endfor %}
             </table>

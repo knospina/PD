@@ -24,8 +24,11 @@ class FriendsController extends Controller {
     public function viewAction($id) {
 
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
+        
+        $infologger = $this->get('my_info');
+        /* @var $infologger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -33,7 +36,7 @@ class FriendsController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('fbId' => $id));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('fbId' => $id));
+            $errorlogger->addError('Requested user with id does not exist.', array('fbId' => $id));
             return $this->redirect($this->generateUrl('index'));
         }
 
@@ -53,7 +56,7 @@ class FriendsController extends Controller {
         );
 
         if (!$friendsWishList) {
-            $logger->addInfo('Wish list for user with this id is empty.', array('id' => $id));
+            $infologger->addInfo('Wish list for user with this id is empty.', array('id' => $id));
         }
 
         if (!empty($userId)) {
@@ -78,8 +81,8 @@ class FriendsController extends Controller {
     public function fulfillAction($id, Request $request) {
 
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -87,7 +90,7 @@ class FriendsController extends Controller {
         $wish = $em->getRepository('EKPDBundle:Wish')->findOneBy(array('id' => $id));
         if ($wish === null) {
 
-            $logger->addError('Requested wish with id does not exist.', array('id' => $id));
+            $errorlogger->addError('Requested wish with id does not exist.', array('id' => $id));
             return $this->redirect($this->generateUrl('index'));
         }
 

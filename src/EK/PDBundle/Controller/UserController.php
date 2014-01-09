@@ -23,8 +23,11 @@ class UserController extends Controller {
     public function viewAction($id) {
 
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
+        
+        $infologger = $this->get('my_info');
+        /* @var $infologger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -32,7 +35,7 @@ class UserController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('id' => $id));
+            $errorlogger->addError('Requested user with id does not exist.', array('id' => $id));
             return $this->redirect($this->generateUrl('index'));
             
         }
@@ -58,7 +61,7 @@ class UserController extends Controller {
             $wish->setFbImage($facebook->api($user->getFbProfilePicRequest($wish->getOwnerId()->getFbId())));
         }
 
-        $logger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $fbFirstName['first_name'], 'last_name' => $fbLastName['last_name']));
+        $infologger->addInfo('User just logged in', array('id' => $user->getId(), 'first_name' => $fbFirstName['first_name'], 'last_name' => $fbLastName['last_name']));
 
         $userId = $this->get('session')->get('userId');
 
@@ -83,8 +86,11 @@ class UserController extends Controller {
      */
     public function wishAction($id, Request $request) {
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
+        
+        $infologger = $this->get('my_info');
+        /* @var $infologger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -92,7 +98,7 @@ class UserController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('id' => $id));
+            $errorlogger->addError('Requested user with id does not exist.', array('id' => $id));
             return $this->redirect($this->generateUrl('index'));
             
         }
@@ -115,7 +121,7 @@ class UserController extends Controller {
         );
 
         if (!$myWishList) {
-            $logger->addInfo('Wishlist for user with this id is empty', array('id' => $id));
+            $infologger->addInfo('Wishlist for user with this id is empty', array('id' => $id));
         }
 
         $wish = new Wish();
@@ -160,8 +166,8 @@ class UserController extends Controller {
      */
     public function editwishAction($userid, $wishid, Request $request) {
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -169,7 +175,7 @@ class UserController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $userid));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('id' => $userid));
+            $errorlogger->addError('Requested user with id does not exist.', array('id' => $userid));
 
             return $this->redirect($this->generateUrl('index'));
         }
@@ -191,7 +197,7 @@ class UserController extends Controller {
         $wish = $em->getRepository('EKPDBundle:Wish')->find($wishid);
 
         if (!$wish) {
-            $logger->addError('Requested wish with this id does not exist', array('id' => $wishid));
+            $errorlogger->addError('Requested wish with this id does not exist', array('id' => $wishid));
         }
         
         $wish->setName($wish->getName());
@@ -238,8 +244,11 @@ class UserController extends Controller {
      */
     public function deletewishAction($userid, $wishid, Request $request) {
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
+        
+        $infologger = $this->get('my_info');
+        /* @var $infologger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -247,7 +256,7 @@ class UserController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $userid));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('id' => $userid));
+            $errorlogger->addError('Requested user with id does not exist.', array('id' => $userid));
             return $this->redirect($this->generateUrl('index'));
         }
 
@@ -267,7 +276,7 @@ class UserController extends Controller {
         $wish = $em->getRepository('EKPDBundle:Wish')->find($wishid);
 
         if (!$wish) {
-            $logger->addError('Requested wish with this id does not exist', array('id' => $wishid));
+            $errorlogger->addError('Requested wish with this id does not exist', array('id' => $wishid));
             return $this->redirect(
                 $this->generateUrl('view_wish', array('id' => $user->getId()))
             );
@@ -284,7 +293,7 @@ class UserController extends Controller {
         );
 
         if (!$myWishList) {
-            $logger->addInfo('Wish list for user with this id is empty', array('id' => $userid));
+            $infologger->addInfo('Wish list for user with this id is empty', array('id' => $userid));
         }
 
         if ($userId == $userid) {
@@ -310,8 +319,11 @@ class UserController extends Controller {
      */
     public function friendswishAction($id) {
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
+        
+        $infologger = $this->get('my_info');
+        /* @var $infologger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -319,7 +331,7 @@ class UserController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('id' => $id));
+            $errorlogger->addError('Requested user with id does not exist.', array('id' => $id));
             return $this->redirect($this->generateUrl('index'));
         }
 
@@ -350,7 +362,7 @@ class UserController extends Controller {
         }
 
         if (!$allWishList) {
-            $logger->addInfo('Friends wish list for user with this id is empty.', array('id' => $id));
+            $infologger->addInfo('Friends wish list for user with this id is empty.', array('id' => $id));
         }        
 
         if ($userId == $id) {
@@ -373,10 +385,9 @@ class UserController extends Controller {
      * @Template()
      */
     public function friendsAction($id) {
-        // Te vajag izveidot visus draugus kā URL, kas aizved uz tā cilvēka profilu
 
-        $logger = $this->get('logger');
-        /* @var $logger \Symfony\Bridge\Monolog\Logger */
+        $errorlogger = $this->get('my_error');
+        /* @var $errorlogger \Symfony\Bridge\Monolog\Logger */
 
         $em = $this->get('doctrine.orm.entity_manager');
         /* @var $em \Doctrine\ORM\EntityManager */
@@ -384,7 +395,7 @@ class UserController extends Controller {
         $user = $em->getRepository('EKPDBundle:User')->findOneBy(array('id' => $id));
         if ($user === null) {
 
-            $logger->addError('Requested user with id does not exist.', array('id' => $id));
+            $errorlogger->addError('Requested user with id does not exist.', array('id' => $id));
             return $this->redirect($this->generateUrl('index'));
         }
 
@@ -421,11 +432,10 @@ class UserController extends Controller {
      * @Template()
      */
     public function logoutAction() {
-        $logger = $this->get('logger');
+        $logger = $this->get('my_info');
         /* @var $logger \Symfony\Bridge\Monolog\Logger */
         $logger->addInfo('User with this id just logged out', array($this->get('session')->get('userId')));
         $this->get('session')->set('userId', '');
-        var_dump($this->get('session')->all());
         return array();
     }
 

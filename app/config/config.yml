@@ -27,6 +27,26 @@ services:
     session.handler.redis:
         class: Drak\NativeSession\NativeRedisSessionHandler
         arguments: [tcp://dev.pd.lv:6379?timeout=2]
+        
+    my_error_handler:
+        class: Monolog\Handler\StreamHandler
+        arguments: [%kernel.root_dir%/logs/%kernel.environment%.error_log.log, error]
+
+    my_error:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [my_error]
+        calls:
+            - [pushHandler, [@my_error_handler]]
+            
+    my_info_handler:
+        class: Monolog\Handler\StreamHandler
+        arguments: [%kernel.root_dir%/logs/%kernel.environment%.info_log.log, info]
+
+    my_info:
+        class: Symfony\Bridge\Monolog\Logger
+        arguments: [my_info]
+        calls:
+            - [pushHandler, [@my_info_handler]]
 
 # Twig Configuration
 twig:
@@ -74,12 +94,15 @@ swiftmailer:
 
 
 monolog:
+    channels: ["my_error", "my_info"]
     handlers:
         error_logger:
             type:  stream
             path:  %kernel.logs_dir%/error_log.log
             level: error
+            channels: [my_error]
         info_logger:
             type:  stream
             path:  %kernel.logs_dir%/info_log.log
-            level: info       
+            level: info    
+            channels: [my_info]

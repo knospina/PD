@@ -1,10 +1,7 @@
-jQuery(document).ready(function(){
-
-   console.log('piesledzu');
-   jQuery('div#my-wishes .delete').click(function() {
-   var li = jQuery(this).parents('li:first');
-   jQuery.post($li.data('delete-url'));
-   li.fadeOut();
-});
-
+jQuery(document).ready(function() {
+    jQuery('#my-wishes tr .delete').click(function() {
+        var tr = jQuery(this).parents('tr:first');
+        jQuery.post(tr.data('delete-url'));
+        tr.fadeOut();
+    });
 });
